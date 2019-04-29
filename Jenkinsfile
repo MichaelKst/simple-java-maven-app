@@ -1,10 +1,5 @@
 pipeline {
 
-	environment {
-		registry = "https://cloud.docker.com/repository/docker/michaelkst/simple-java-maven-app"
-		registryCredential = 'dockerhub'
-		dockerImage = ''
-	}
     agent none 
 	
     options {
@@ -56,9 +51,9 @@ pipeline {
             }
 			steps {
 				script {
-					dockerImage = docker.build registry + ":$BUILD_NUMBER"
+					dockerImage = docker.build "https://cloud.docker.com/repository/docker/michaelkst/simple-java-maven-app" + ":$BUILD_NUMBER"
 			
-					docker.withRegistry( '', registryCredential ) {
+					docker.withRegistry( "https://cloud.docker.com/repository/docker/michaelkst/simple-java-maven-app", 'dockerhub' ) {
 						dockerImage.push()
 					}	
 				}
