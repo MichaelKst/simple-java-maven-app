@@ -1,9 +1,6 @@
 pipeline {
 
-    agent any
-	tools {
-		org.jenkinsci.plugins.docker.commons.tools.DockerTool 'jenkinsDocker'
-	}	
+    agent none
 	
     options {
         skipStagesAfterUnstable()
@@ -18,7 +15,9 @@ pipeline {
 					def dockerHome = tool 'jenkinsDocker'
 					env.PATH = "${dockerHome}/bin:${env.PATH}"
 				}
-				sh 'docker -v'
+				docker.withTool("jenkinsDocker"){
+					sh 'docker -v'
+				}
 			}
 		}
         stage('Build') {
@@ -57,11 +56,12 @@ pipeline {
 				script {
 					def dockerHome = tool 'jenkinsDocker'
 					env.PATH = "${dockerHome}/bin:${env.PATH}"
-					dockerImage = docker.build "https://cloud.docker.com/repository/docker/michaelkst/simple-java-maven-app" + ":$BUILD_NUMBER"
-			
-					docker.withRegistry( "https://cloud.docker.com/repository/docker/michaelkst/simple-java-maven-app", 'dockerhub' ) {
-						dockerImage.push()
-					}	
+					docker.withTool ("jenkinsDocker"){
+						dockerImage = docker.build "https://cloud.docker.com/repository/docker/michaelkst/simple-java-maven-app" + ":$BUILD_NUMBER"
+						docker.withRegistry( "https://cloud.docker.com/repository/docker/michaelkst/simple-java-maven-app", 'dockerhub' ) {
+							dockerImage.push()
+						}	
+					}
 				}
 			}
 		}
