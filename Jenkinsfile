@@ -11,7 +11,7 @@ pipeline {
 		stage('Initialize'){
 			agent {
 				docker{
-					label 'dockerserver'
+					label 'dockerjenkins'
 					image 'node:7-alpine'
 				}
 			}
@@ -19,14 +19,14 @@ pipeline {
 				script{
 					def dockerHome = tool 'jenkinsDocker'
 					env.PATH = "${dockerHome}/bin:${env.PATH}"
-					sh 'docker -v'
 				}
-				
+				sh 'docker -v'
 			}
 		}
         stage('Build') {
 		    agent {
 				docker {
+					label 'dockerjenkins'
 					image 'maven:3-alpine'
 					args '-v $HOME/.m2:/root/.m2'
 				}
@@ -38,6 +38,7 @@ pipeline {
         stage('Test') {
 		    agent {
 			docker {
+				label 'dockerjenkins'
 				image 'maven:3-alpine'
 				args '-v $HOME/.m2:/root/.m2'
 			}
@@ -54,7 +55,7 @@ pipeline {
         stage('Building image and publish') {
 			agent {
 				docker{
-					label 'dockerserver'
+					label 'dockerjenkins'
 					image 'node:7-alpine'
 				}
 			}
