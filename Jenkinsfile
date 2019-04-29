@@ -11,9 +11,16 @@ pipeline {
         skipStagesAfterUnstable()
     }
     stages {
+		stage('Initialize'){
+			def dockerHome = tool 'jenkinsDocker'
+			env.PATH = "${dockerHome}/bin:${env.PATH}"
+		}
         stage('Build') {
 			agent {
-				docker {image 'maven:3-alpine'}
+				docker {
+					image 'maven:3-alpine'
+					args '-v $HOME/.m2:/root/.m2'
+				}
 			}
             steps {
                 sh 'mvn -B -DskipTests clean package'
@@ -21,7 +28,10 @@ pipeline {
         }
         stage('Test') {
 			agent {
-				docker {image 'maven:3-alpine'}
+				docker {
+					image 'maven:3-alpine'
+					args '-v $HOME/.m2:/root/.m2'
+				}
 			}
 			steps {
                 sh 'mvn test'
