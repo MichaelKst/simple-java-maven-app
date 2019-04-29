@@ -12,7 +12,7 @@ pipeline {
     }
     stages {
 		stage('Initialize'){
-			steps{
+			script{
 				def dockerHome = tool 'jenkinsDocker'
 				env.PATH = "${dockerHome}/bin:${env.PATH}"
 			}
