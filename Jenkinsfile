@@ -1,10 +1,7 @@
 pipeline {
 
-    agent {
-		docker {
-			image 'maven:3-alpine'
-			args '-v $HOME/.m2:/root/.m2'
-		}
+	agent {
+		label 'dockerjenkins'
 	}
 	
     options {
@@ -12,20 +9,39 @@ pipeline {
     }
     stages {
 		stage('Initialize'){
+			agent {
+				docker{
+					label 'dockerserver'
+					image 'node:7-alpine'
+				}
+			}
 			steps{
 				script{
 					def dockerHome = tool 'jenkinsDocker'
 					env.PATH = "${dockerHome}/bin:${env.PATH}"
+					sh 'docker -v'
 				}
 				
 			}
 		}
         stage('Build') {
+		    agent {
+				docker {
+					image 'maven:3-alpine'
+					args '-v $HOME/.m2:/root/.m2'
+				}
+			}
             steps {
                 sh 'mvn -B -DskipTests clean package'
             }
         }
         stage('Test') {
+		    agent {
+			docker {
+				image 'maven:3-alpine'
+				args '-v $HOME/.m2:/root/.m2'
+			}
+		}
 			steps {
                 sh 'mvn test'
             }
@@ -36,6 +52,12 @@ pipeline {
             }
         }
         stage('Building image and publish') {
+			agent {
+				docker{
+					label 'dockerserver'
+					image 'node:7-alpine'
+				}
+			}
 			steps {
 				script {
 					docker.withTool ('jenkinsDocker'){
