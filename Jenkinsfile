@@ -1,4 +1,10 @@
 pipeline {
+
+	environment {
+		registry = "https://cloud.docker.com/repository/docker/michaelkst/simple-java-maven-app"
+		registryCredential = 'dockerhub'
+		dockerImage = ''
+	}
     agent {
         docker {
             image 'maven:3-alpine'
@@ -24,10 +30,25 @@ pipeline {
                 }
             }
         }
-        stage('Deliver') { 
-            steps {
-                sh './jenkins/scripts/deliver.sh' 
-            }
-        }
+        stage('Building image') {
+			steps{
+				script {
+					dockerImage = docker.build registry + ":$BUILD_NUMBER"
+				}
+			}
+		}
+		stage('Deploy Image') {
+			steps{
+				script {
+					docker.withRegistry( '', registryCredential ) {
+					dockerImage.push()
+				}
+			}
+		}
+    }
+    stage('Remove Unused docker image') {
+		steps{
+			sh "docker rmi $registry:$BUILD_NUMBER"
+		}
     }
 }
