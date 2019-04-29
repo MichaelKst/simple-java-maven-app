@@ -1,15 +1,17 @@
 pipeline {
 
-    agent none
+    agent {
+		docker {
+			image 'maven:3-alpine'
+			args '-v $HOME/.m2:/root/.m2'
+		}
+	}
 	
     options {
         skipStagesAfterUnstable()
     }
     stages {
 		stage('Initialize'){
-			agent {
-                docker { image 'node:7-alpine'}
-            }
 			steps{
 				script{
 					def dockerHome = tool 'jenkinsDocker'
@@ -19,23 +21,11 @@ pipeline {
 			}
 		}
         stage('Build') {
-			agent {
-				docker {
-					image 'maven:3-alpine'
-					args '-v $HOME/.m2:/root/.m2'
-				}
-			}
             steps {
                 sh 'mvn -B -DskipTests clean package'
             }
         }
         stage('Test') {
-			agent {
-				docker {
-					image 'maven:3-alpine'
-					args '-v $HOME/.m2:/root/.m2'
-				}
-			}
 			steps {
                 sh 'mvn test'
             }
