@@ -14,9 +14,6 @@ pipeline {
 				script{
 					def dockerHome = tool 'jenkinsDocker'
 					env.PATH = "${dockerHome}/bin:${env.PATH}"
-					docker.withTool('jenkinsDocker'){
-						docker -v
-					}
 				}
 				
 			}
@@ -57,7 +54,7 @@ pipeline {
 				script {
 					def dockerHome = tool 'jenkinsDocker'
 					env.PATH = "${dockerHome}/bin:${env.PATH}"
-					docker.withTool ("jenkinsDocker"){
+					docker.withTool ('jenkinsDocker'){
 						dockerImage = docker.build "https://cloud.docker.com/repository/docker/michaelkst/simple-java-maven-app" + ":$BUILD_NUMBER"
 						docker.withRegistry( "https://cloud.docker.com/repository/docker/michaelkst/simple-java-maven-app", 'dockerhub' ) {
 							dockerImage.push()
