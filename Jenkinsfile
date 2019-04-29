@@ -5,23 +5,25 @@ pipeline {
 		registryCredential = 'dockerhub'
 		dockerImage = ''
 	}
-    agent {
-        docker {
-            image 'maven:3-alpine'
-            args '-v /root/.m2:/root/.m2'
-        }
-    }
+    agent none 
+	
     options {
         skipStagesAfterUnstable()
     }
     stages {
         stage('Build') {
+			agent {
+				docker {image 'maven:3-alpine'}
+			}
             steps {
                 sh 'mvn -B -DskipTests clean package'
             }
         }
         stage('Test') {
-            steps {
+			agent {
+				docker {image 'maven:3-alpine'}
+			}
+			steps {
                 sh 'mvn test'
             }
             post {
@@ -33,9 +35,8 @@ pipeline {
         stage('Building image and publish') {
 		
 			agent {
-                docker { image 'node:7-alpine' }
+                docker { image 'node:7-alpine'}
             }
-			
 			steps {
 				script {
 					dockerImage = docker.build registry + ":$BUILD_NUMBER"
