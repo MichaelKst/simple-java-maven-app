@@ -14,8 +14,7 @@ pipeline {
 				script{
 					def dockerHome = tool 'jenkinsDocker'
 					env.PATH = "${dockerHome}/bin:${env.PATH}"
-					docker.withTool('jenkinsDocker'){
-						sh 'docker -v'
+						docker {sh 'docker -v'}
 					}
 				}
 			}
