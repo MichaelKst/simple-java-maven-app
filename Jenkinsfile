@@ -15,6 +15,7 @@ pipeline {
 					def dockerHome = tool 'jenkinsDocker'
 					env.PATH = "${dockerHome}/bin:${env.PATH}"
 				}
+				sh 'docker -v'
 			}
 		}
         stage('Build') {
