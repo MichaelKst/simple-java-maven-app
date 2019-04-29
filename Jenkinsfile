@@ -46,10 +46,6 @@ pipeline {
             }
         }
         stage('Building image and publish') {
-		
-			agent {
-                docker { image 'node:7-alpine'}
-            }
 			steps {
 				script {
 					docker.withTool ('jenkinsDocker'){
