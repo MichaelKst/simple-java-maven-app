@@ -30,25 +30,23 @@ pipeline {
                 }
             }
         }
-        stage('Building image') {
+        stage('Building image and publish') {
+		
+			agent {
+                docker { image 'node:7-alpine' }
+            }
+			
 			steps {
 				script {
 					dockerImage = docker.build registry + ":$BUILD_NUMBER"
 				}
 			}
-		}
-		stage('Deploy Image') {
 			steps {
 				script {
 					docker.withRegistry( '', registryCredential ) {
 						dockerImage.push()
 					}	
 				}
-			}
-		}
-		stage('Remove Unused docker image') {
-			steps {
-				sh "docker rmi $registry:$BUILD_NUMBER"
 			}
 		}
 	}
