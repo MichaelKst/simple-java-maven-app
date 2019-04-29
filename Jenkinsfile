@@ -1,6 +1,9 @@
 pipeline {
 
-    agent none 
+    agent any
+	tools {
+		jenkinsDocker
+	}	
 	
     options {
         skipStagesAfterUnstable()
