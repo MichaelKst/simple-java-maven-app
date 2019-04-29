@@ -2,7 +2,7 @@ pipeline {
 
     agent any
 	tools {
-		jenkinsDocker 'jenkinsDocker'
+		org.jenkinsci.plugins.docker.commons.tools.DockerTool 'jenkinsDocker'
 	}	
 	
     options {
