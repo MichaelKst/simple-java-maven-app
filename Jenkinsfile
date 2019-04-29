@@ -15,9 +15,11 @@ pipeline {
 			agent {
                 docker { image 'node:7-alpine'}
             }
-			script{
-				def dockerHome = tool 'jenkinsDocker'
-				env.PATH = "${dockerHome}/bin:${env.PATH}"
+			steps{
+				script{
+					def dockerHome = tool 'jenkinsDocker'
+					env.PATH = "${dockerHome}/bin:${env.PATH}"
+				}
 			}
 		}
         stage('Build') {
