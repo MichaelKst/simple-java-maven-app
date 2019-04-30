@@ -9,7 +9,6 @@ pipeline {
 		stage('Initialize'){
 			agent {
 				docker{
-					label 'dockerjenkins'
 					image 'node:7-alpine'
 				}
 			}
@@ -20,7 +19,6 @@ pipeline {
         stage('Build') {
 		    agent {
 				docker {
-					label 'dockerjenkins'
 					image 'maven:3-alpine'
 					args '-v $HOME/.m2:/root/.m2'
 				}
@@ -32,7 +30,6 @@ pipeline {
         stage('Test') {
 		    agent {
 			docker {
-				label 'dockerjenkins'
 				image 'maven:3-alpine'
 				args '-v $HOME/.m2:/root/.m2'
 			}
@@ -49,7 +46,6 @@ pipeline {
         stage('Building image and publish') {
 			agent {
 				docker{
-					label 'dockerjenkins'
 					image 'node:7-alpine'
 				}
 			}
