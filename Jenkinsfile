@@ -7,11 +7,6 @@ pipeline {
     }
     stages {
 		stage('Initialize'){
-			agent {
-				docker{
-					image 'node:7-alpine'
-				}
-			}
 			steps{
 				sh 'docker -v'
 			}
