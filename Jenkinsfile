@@ -1,8 +1,6 @@
 pipeline {
 
-	agent {
-		label 'dockerjenkins'
-	}
+	agent none
 	
     options {
         skipStagesAfterUnstable()
