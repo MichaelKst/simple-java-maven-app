@@ -11,6 +11,13 @@ pipeline {
 				sh 'docker -v'
 			}
 		}
+		stage('Building image') {
+			steps {
+				script {
+					dockerImage = docker.build "simple-java-maven-app" + ":$BUILD_NUMBER"
+				}	
+			}
+		}
         stage('Test') {
 		    agent {
 			docker {
@@ -36,12 +43,5 @@ pipeline {
                 sh 'mvn -B -DskipTests clean package'
             }
         }
-        stage('Building image and publish') {
-			steps {
-				script {
-					dockerImage = docker.build "simple-java-maven-app" + ":$BUILD_NUMBER"
-				}	
-			}
-		}
 	}
 }
