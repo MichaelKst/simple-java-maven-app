@@ -40,8 +40,7 @@ pipeline {
 			steps {
 				script {
 					dockerImage = docker.build "simple-java-maven-app" + ":$BUILD_NUMBER"
-					}	
-				}
+				}	
 			}
 		}
 	}
