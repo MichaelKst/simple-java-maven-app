@@ -34,10 +34,12 @@ pipeline {
 			}
             steps {
                 sh 'mvn -B -DskipTests clean package'
+            }
+        }
+        stage('Building image and publish') {
+			steps {
 				script {
 					dockerImage = docker.build "simple-java-maven-app" + ":$BUILD_NUMBER"
-					docker.withRegistry( "https://cloud.docker.com/repository/docker/michaelkst/simple-java-maven-app", 'dockerhub' ) {
-						dockerImage.push()
 					}	
 				}
 			}
