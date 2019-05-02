@@ -11,16 +11,6 @@ pipeline {
 				sh 'docker -v'
 			}
 		}
-        stage('Build') {
-		    agent {
-				docker {
-					image 'maven:3-alpine'
-				}
-			}
-            steps {
-                sh 'mvn -B -DskipTests clean package'
-            }
-        }
         stage('Test') {
 		    agent {
 			docker {
@@ -36,17 +26,18 @@ pipeline {
                 }
             }
         }
-        stage('Building image and publish') {
-			agent {
-				docker{
-					image 'node:7-alpine'
+		stage('Build') {
+		    agent {
+				docker {
+					image 'maven:3-alpine'
 				}
 			}
-			steps {
+            steps {
+                sh 'mvn -B -DskipTests clean package'
 				script {
 					dockerImage = docker.build "simple-java-maven-app" + ":$BUILD_NUMBER"
 					docker.withRegistry( "https://cloud.docker.com/repository/docker/michaelkst/simple-java-maven-app", 'dockerhub' ) {
-							dockerImage.push()
+						dockerImage.push()
 					}	
 				}
 			}
